@@ -1,7 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces.Strategy;
 using Domain.Resources;
-using System;
 
 namespace Domain.Strategies
 {
@@ -11,7 +10,13 @@ namespace Domain.Strategies
 
         public Enums.Acao RealizarJogada(List<Carta> cartas)
         {
-            return _random.Next(2) == 0 ? Enums.Acao.Puxar : Enums.Acao.Manter;
+            var valor = Carta.GetValorTotal(cartas);
+
+            if (valor >= 21) return Enums.Acao.Manter;
+
+            if (valor <= 11) return _random.Next(2) == 0 ? Enums.Acao.Puxar : Enums.Acao.Manter;
+
+            return _random.Next(4) == 0 ? Enums.Acao.Puxar : Enums.Acao.Manter;
         }
     }
 }

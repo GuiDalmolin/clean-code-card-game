@@ -54,10 +54,20 @@ namespace Presentation.Views
 
             do
             {
-                Console.Clear();
-                ExibirCartas(jogadores);
+                var jogadas = new List<bool>();
 
-                continua = jogadores.Skip(1).Reverse().Any(j => !RealizarAcao(j, iterator));
+                foreach (var jogador in jogadores.Skip(1).Reverse())
+                {
+                    Console.Clear();
+                    ExibirCartas(jogadores);
+
+                    jogadas.Add(RealizarAcao(jogador, iterator));
+
+                    Thread.Sleep(1000);
+                }
+
+                continua = !jogadas.All(a => a);
+
             } while (continua);
         }
 
