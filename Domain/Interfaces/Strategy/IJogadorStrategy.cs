@@ -6,5 +6,6 @@ namespace Domain.Interfaces.Strategy
     public interface IJogadorStrategy
     {
         Enums.Acao RealizarJogada(List<Carta> cartas);
+        int RealizarAposta(Jogador jogador);
     }
 }
