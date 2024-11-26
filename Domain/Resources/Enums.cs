@@ -30,7 +30,8 @@
         public enum Acao
         {
             Manter,
-            Puxar
+            Puxar,
+            DoubleDown
         }
 
         public enum TipoJogador

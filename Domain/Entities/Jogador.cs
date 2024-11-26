@@ -28,6 +28,8 @@ namespace Domain.Entities
             return _jogadorStrategy.RealizarJogada(Cartas);
         }
 
+        public int ApostaAtual { get; set; }
+
         public int Apostar()
         {
             return _jogadorStrategy.RealizarAposta(this);
@@ -37,5 +39,8 @@ namespace Domain.Entities
         {
             Cartas.Clear();
         }
+
+
+
     }
 }

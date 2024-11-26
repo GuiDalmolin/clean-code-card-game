@@ -205,10 +205,11 @@ namespace Presentation.Views
             var acao = jogador.Jogar();
             if (acao == Enums.Acao.Puxar)
                 jogador.Cartas.Add(PuxarCarta(iterator));
-            if (acao == Enums.Acao.Manter)
+            else if (acao == Enums.Acao.Manter)
                 jogador.SetStrategy(new JogadorManterStrategy());
-
-            return acao == Enums.Acao.Manter;
+            else if (acao == Enums.Acao.DoubleDown)
+                jogador.SetStrategy(new DoubleDownStrategy());
+            return acao == Enums.Acao.Manter || acao == Enums.Acao.DoubleDown;
         }
 
         private static Carta PuxarCarta(IBaralhoIterator iterator)
