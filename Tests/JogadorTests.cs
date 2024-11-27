@@ -163,5 +163,29 @@ namespace Tests
             // Assert
             Assert.Equal(Enums.Acao.Manter, resultado);
         }
+
+        [Fact]
+                public void DoubleDownStrategy_DeveDobrarApostaEComprarUmaUnicaCarta()
+                {
+                    // Arrange
+                    var jogador = new Jogador("Jogador");
+                    jogador.Pontuacao = 100;
+                    jogador.ApostaAtual = 10;
+
+                    var mockIterator = new Mock<IBaralhoIterator>();
+                    var cartaComprada = new Carta { Numero = Enums.Numero.As, Naipe = Enums.Naipe.Espadas };
+                    mockIterator.Setup(i => i.Next()).Returns(cartaComprada);
+
+                    var doubleDownStrategy = new DoubleDownStrategy();
+
+                    // Act
+                    doubleDownStrategy.ExecutarAcao(jogador, mockIterator.Object);
+
+                    // Assert
+                    Assert.Equal(80, jogador.Pontuacao);
+                    Assert.Equal(20, jogador.ApostaAtual);
+                    Assert.Single(jogador.Cartas);
+                    Assert.Contains(cartaComprada, jogador.Cartas);
+                }
     }
 }
