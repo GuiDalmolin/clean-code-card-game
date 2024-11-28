@@ -14,27 +14,32 @@ namespace Domain.Strategies
             {
                 if (computador.Vitorias > 2)
                 {
-                    return _random.Next(2, 5);
+                    return _random.Next(2, 5) * 10;
                 }
 
-                return _random.Next(1, 4);
+                return _random.Next(1, 4) * 10;
             }
             else if (computador.Pontuacao > 40)
             {
                 if (computador.Vitorias > 2)
                 {
-                    return _random.Next(1, 3);
+                    return _random.Next(1, 3) * 10;
                 }
             }
 
             return computador.Pontuacao;
         }
 
-        public Enums.Acao RealizarJogada(List<Carta> cartas)
+        public Enums.Acao RealizarJogada(Jogador jogador)
         {
-            var valor = Carta.GetValorTotal(cartas);
+            var valor = Carta.GetValorTotal(jogador.Cartas);
 
             if (valor >= 21) return Enums.Acao.Manter;
+
+            if (valor >= 9 && valor <= 11 && jogador.Turno == 1)
+            {
+                if (_random.Next(2) == 0) return Enums.Acao.DoubleDown;
+            }
 
             if (valor <= 11) return _random.Next(2) == 0 ? Enums.Acao.Puxar : Enums.Acao.Manter;
 

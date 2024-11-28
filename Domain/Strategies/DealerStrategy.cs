@@ -11,9 +11,9 @@ namespace Domain.Strategies
             return jogador.Pontuacao;
         }
 
-        public Enums.Acao RealizarJogada(List<Carta> cartas)
+        public Enums.Acao RealizarJogada(Jogador jogador)
         {
-            return Carta.GetValorTotal(cartas) < 17 ? Enums.Acao.Puxar : Enums.Acao.Manter;
+            return Carta.GetValorTotal(jogador.Cartas) < 17 ? Enums.Acao.Puxar : Enums.Acao.Manter;
         }
     }
 }

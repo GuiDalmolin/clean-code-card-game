@@ -14,9 +14,12 @@ namespace Presentation.Views
             Configurar();
 
             var jogadores = ArrangeJogadores();
+            var rodadas = 0;
 
             do
             {
+                rodadas++;
+
                 var (baralho, iterator) = ArrangeMesa();
 
                 jogadores[0].SetStrategy(new DealerStrategy());
@@ -24,7 +27,7 @@ namespace Presentation.Views
                 jogadores[2].SetStrategy(new ComputadorStrategy());
                 jogadores[3].SetStrategy(new HumanoStrategy());
 
-                var apostas = RealizarApostas(jogadores);
+                RealizarApostas(jogadores);
 
                 jogadores.ForEach(j => j.Cartas.Distribuir(iterator, 2));
 
@@ -32,7 +35,7 @@ namespace Presentation.Views
 
                 JogarRodadasDealer(jogadores, iterator);
 
-                DefinirVencedores(jogadores, CalcularPontuacoes(jogadores), apostas);
+                DefinirVencedores(jogadores, CalcularPontuacoes(jogadores));
 
                 jogadores.ForEach(jogador => jogador.Resetar());
 
@@ -40,6 +43,7 @@ namespace Presentation.Views
 
             Console.Clear();
             Console.WriteLine("Fim de jogo!");
+            Console.WriteLine($"Número de rodadas: {rodadas}");
         }
 
         private static void Configurar()
@@ -65,16 +69,13 @@ namespace Presentation.Views
             ];
         }
 
-        private static Dictionary<string, int> RealizarApostas(List<Jogador> jogadores)
+        private static void RealizarApostas(List<Jogador> jogadores)
         {
-            var apostas = jogadores.ToDictionary(
-                jogador => jogador.Nome,
-                jogador => jogador.Apostar()
-            );
-
-            jogadores.ForEach(jogador => jogador.Pontuacao -= apostas[jogador.Nome]);
-
-            return apostas;
+            jogadores.ForEach(jogador =>
+            {
+                jogador.Aposta = jogador.Apostar();
+                jogador.Pontuacao -= jogador.Aposta;
+            });
         }
 
         private static void JogarRodadas(List<Jogador> jogadores, IBaralhoIterator iterator)
@@ -89,7 +90,7 @@ namespace Presentation.Views
                 {
                     Console.Clear();
                     ExibirCartas(jogadores);
-
+                    jogador.Turno++;
                     jogadas.Add(RealizarAcao(jogador, iterator));
                 }
 
@@ -128,7 +129,7 @@ namespace Presentation.Views
         private static Dictionary<string, int> CalcularPontuacoes(List<Jogador> jogadores) =>
             jogadores.ToDictionary(j => j.Nome, j => Carta.GetValorTotal(j.Cartas));
 
-        private static void DefinirVencedores(List<Jogador> jogadores, Dictionary<string, int> pontuacoes, Dictionary<string, int> apostas)
+        private static void DefinirVencedores(List<Jogador> jogadores, Dictionary<string, int> pontuacoes)
         {
             var dealer = jogadores[0];
             var pontuacaoDealer = pontuacoes[dealer.Nome];
@@ -158,13 +159,13 @@ namespace Presentation.Views
                 else if (pontuacaoDealer > 21 || pontuacaoJogador > pontuacaoDealer)
                 {
                     Console.WriteLine($"{jogador.Nome} ganhou!");
-                    jogador.Pontuacao += apostas[jogador.Nome] * 2;
+                    jogador.Pontuacao += jogador.Aposta * 2;
                     jogador.Vitorias++;
                 }
                 else if (pontuacaoJogador == pontuacaoDealer)
                 {
                     Console.WriteLine($"{jogador.Nome} empatou e recuperou sua aposta.");
-                    jogador.Pontuacao += apostas[jogador.Nome];
+                    jogador.Pontuacao += jogador.Aposta;
                 }
                 else
                 {
@@ -195,7 +196,11 @@ namespace Presentation.Views
                 ]
                 : jogador.Cartas.Select(c => c.ObterLinhasCarta()).ToList();
 
-            Console.WriteLine($"Cartas de {jogador.Nome} ({jogador.Pontuacao} fichas):");
+            var mensagem = jogador.Nome == "dealer" 
+                ? $"Cartas do {jogador.Nome}" 
+                : $"Cartas do {jogador.Nome} (fichas: {jogador.Pontuacao + jogador.Aposta}) (aposta: {jogador.Aposta}):";
+
+            Console.WriteLine(mensagem);
             for (int i = 0; i < 7; i++)
                 Console.WriteLine(string.Join(" ", linhas.Select(l => l[i])));
         }
@@ -203,13 +208,19 @@ namespace Presentation.Views
         private static bool RealizarAcao(Jogador jogador, IBaralhoIterator iterator)
         {
             var acao = jogador.Jogar();
+
             if (acao == Enums.Acao.Puxar)
                 jogador.Cartas.Add(PuxarCarta(iterator));
             else if (acao == Enums.Acao.Manter)
                 jogador.SetStrategy(new JogadorManterStrategy());
             else if (acao == Enums.Acao.DoubleDown)
-                jogador.SetStrategy(new DoubleDownStrategy());
-            return acao == Enums.Acao.Manter || acao == Enums.Acao.DoubleDown;
+            {
+                jogador.Pontuacao -= jogador.Aposta;
+                jogador.Aposta *= 2;
+                jogador.Cartas.Add(PuxarCarta(iterator));
+                jogador.SetStrategy(new JogadorManterStrategy());
+            }
+            return acao == Enums.Acao.Manter;
         }
 
         private static Carta PuxarCarta(IBaralhoIterator iterator)

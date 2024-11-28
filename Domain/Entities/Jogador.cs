@@ -8,7 +8,9 @@ namespace Domain.Entities
         public string Nome { get; set; } = string.Empty;
         public List<Carta> Cartas { get; set; } = new List<Carta>();
         public int Pontuacao = 100;
+        public int Aposta = 0;
         public int Vitorias = 0;
+        public int Turno = 0;
 
         protected IJogadorStrategy _jogadorStrategy;
 
@@ -25,10 +27,8 @@ namespace Domain.Entities
 
         public Enums.Acao Jogar()
         {
-            return _jogadorStrategy.RealizarJogada(Cartas);
+            return _jogadorStrategy.RealizarJogada(this);
         }
-
-        public int ApostaAtual { get; set; }
 
         public int Apostar()
         {
@@ -37,6 +37,7 @@ namespace Domain.Entities
 
         public void Resetar()
         {
+            Turno = 0;
             Cartas.Clear();
         }
 

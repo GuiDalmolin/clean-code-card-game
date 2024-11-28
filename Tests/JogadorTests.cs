@@ -16,7 +16,7 @@ namespace Tests
             var strategy = new HumanoStrategy(() => "s");
 
             // Act
-            var resultado = strategy.RealizarJogada(new List<Carta>());
+            var resultado = strategy.RealizarJogada(new Humano(""));
 
             // Assert
             Assert.Equal(Enums.Acao.Puxar, resultado);
@@ -29,7 +29,7 @@ namespace Tests
             var strategy = new HumanoStrategy(() => "n");
 
             // Act
-            var resultado = strategy.RealizarJogada(new List<Carta>());
+            var resultado = strategy.RealizarJogada(new Humano(""));
 
             // Assert
             Assert.Equal(Enums.Acao.Manter, resultado);
@@ -42,7 +42,7 @@ namespace Tests
             var strategy = new HumanoStrategy(() => "x");
 
             // Act
-            var resultado = strategy.RealizarJogada(new List<Carta>());
+            var resultado = strategy.RealizarJogada(new Humano(""));
 
             // Assert
             Assert.Equal(Enums.Acao.Manter, resultado);
@@ -67,7 +67,7 @@ namespace Tests
             // Arrange
             var jogador = new Computador("CPU");
             var mockStrategy = new Mock<IJogadorStrategy>();
-            mockStrategy.Setup(s => s.RealizarJogada(It.IsAny<List<Carta>>()))
+            mockStrategy.Setup(s => s.RealizarJogada(It.IsAny<Jogador>()))
                         .Returns(Enums.Acao.Manter);
 
             // Act
@@ -83,7 +83,7 @@ namespace Tests
         {
             // Arrange
             var mockStrategy = new Mock<IJogadorStrategy>();
-            mockStrategy.Setup(s => s.RealizarJogada(It.IsAny<List<Carta>>()))
+            mockStrategy.Setup(s => s.RealizarJogada(It.IsAny<Jogador>()))
                         .Returns(Enums.Acao.Puxar);
             var jogador = new Computador("CPU");
             jogador.SetStrategy(mockStrategy.Object);
@@ -92,7 +92,7 @@ namespace Tests
             jogador.Jogar();
 
             // Assert
-            mockStrategy.Verify(s => s.RealizarJogada(It.IsAny<List<Carta>>()), Times.Once);
+            mockStrategy.Verify(s => s.RealizarJogada(It.IsAny<Jogador>()), Times.Once);
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace Tests
             // Act
             for (int i = 0; i < numeroDeTestes; i++)
             {
-                var resultado = strategy.RealizarJogada(new List<Carta>());
+                var resultado = strategy.RealizarJogada(new Humano(""));
                 if (resultado == Enums.Acao.Puxar) resultados[0]++;
                 else resultados[1]++;
             }
@@ -127,7 +127,9 @@ namespace Tests
             };
 
             // Act
-            var acao = dealerStrategy.RealizarJogada(cartas);
+            var dealer = new Dealer("");
+            dealer.Cartas = cartas;
+            var acao = dealerStrategy.RealizarJogada(dealer);
 
             // Assert
             Assert.Equal(Enums.Acao.Puxar, acao);
@@ -145,7 +147,9 @@ namespace Tests
             };
 
             // Act
-            var acao = dealerStrategy.RealizarJogada(cartas);
+            var dealer = new Dealer("");
+            dealer.Cartas = cartas;
+            var acao = dealerStrategy.RealizarJogada(dealer);
 
             // Assert
             Assert.Equal(Enums.Acao.Manter, acao);
@@ -158,34 +162,10 @@ namespace Tests
             var estrategia = new JogadorManterStrategy();
 
             // Act
-            var resultado = estrategia.RealizarJogada(new List<Carta>());
+            var resultado = estrategia.RealizarJogada(new Humano(""));
 
             // Assert
             Assert.Equal(Enums.Acao.Manter, resultado);
         }
-
-        [Fact]
-                public void DoubleDownStrategy_DeveDobrarApostaEComprarUmaUnicaCarta()
-                {
-                    // Arrange
-                    var jogador = new Jogador("Jogador");
-                    jogador.Pontuacao = 100;
-                    jogador.ApostaAtual = 10;
-
-                    var mockIterator = new Mock<IBaralhoIterator>();
-                    var cartaComprada = new Carta { Numero = Enums.Numero.As, Naipe = Enums.Naipe.Espadas };
-                    mockIterator.Setup(i => i.Next()).Returns(cartaComprada);
-
-                    var doubleDownStrategy = new DoubleDownStrategy();
-
-                    // Act
-                    doubleDownStrategy.ExecutarAcao(jogador, mockIterator.Object);
-
-                    // Assert
-                    Assert.Equal(80, jogador.Pontuacao);
-                    Assert.Equal(20, jogador.ApostaAtual);
-                    Assert.Single(jogador.Cartas);
-                    Assert.Contains(cartaComprada, jogador.Cartas);
-                }
     }
 }

@@ -11,7 +11,7 @@ namespace Domain.Strategies
             return 0;
         }
 
-        public Enums.Acao RealizarJogada(List<Carta> cartas)
+        public Enums.Acao RealizarJogada(Jogador jogador)
         {
             return Enums.Acao.Manter;
         }

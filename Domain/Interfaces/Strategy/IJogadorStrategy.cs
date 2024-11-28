@@ -5,7 +5,7 @@ namespace Domain.Interfaces.Strategy
 {
     public interface IJogadorStrategy
     {
-        Enums.Acao RealizarJogada(List<Carta> cartas);
+        Enums.Acao RealizarJogada(Jogador jogador);
         int RealizarAposta(Jogador jogador);
     }
 }
