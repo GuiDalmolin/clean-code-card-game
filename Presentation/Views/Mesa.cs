@@ -1,5 +1,8 @@
-﻿using Domain.Entities;
+﻿using Domain.Dtos;
+using Domain.Entities;
 using Domain.Factories;
+using Domain.Handlers;
+using Domain.Interfaces.ChainOfResponsability;
 using Domain.Interfaces.Iterator;
 using Domain.Resources;
 using Domain.Strategies;
@@ -134,6 +137,7 @@ namespace Presentation.Views
             var dealer = jogadores[0];
             var pontuacaoDealer = pontuacoes[dealer.Nome];
 
+            #region tempo de espera
             Thread.Sleep(700);
             Console.Write(".");
             Thread.Sleep(700);
@@ -142,8 +146,12 @@ namespace Presentation.Views
             Console.Write(".");
             Thread.Sleep(700);
             Console.Clear();
+            #endregion
+
             Console.WriteLine($"Pontuação do Dealer: {pontuacaoDealer}");
             Console.WriteLine();
+
+            var chain = CriarCadeiaDeResponsabilidade();
 
             foreach (var jogador in jogadores.Skip(1))
             {
@@ -151,31 +159,14 @@ namespace Presentation.Views
                 var pontuacaoJogador = pontuacoes[jogador.Nome];
                 Console.WriteLine($"Jogador: {jogador.Nome} - Pontuação: {pontuacaoJogador}");
                 Thread.Sleep(700);
-                if (pontuacaoJogador > 21)
-                {
-                    Console.WriteLine($"{jogador.Nome} perdeu (estourou).");
-                    jogador.Vitorias--;
-                }
-                else if (pontuacaoDealer > 21 || pontuacaoJogador > pontuacaoDealer)
-                {
-                    Console.WriteLine($"{jogador.Nome} ganhou!");
-                    jogador.Pontuacao += jogador.Aposta * 2;
-                    jogador.Vitorias++;
-                }
-                else if (pontuacaoJogador == pontuacaoDealer)
-                {
-                    Console.WriteLine($"{jogador.Nome} empatou e recuperou sua aposta.");
-                    jogador.Pontuacao += jogador.Aposta;
-                }
-                else
-                {
-                    Console.WriteLine($"{jogador.Nome} perdeu.");
-                    jogador.Vitorias--;
-                }
 
+                var dto = new DefinirVencedoresDto(jogador, pontuacaoJogador, pontuacaoDealer);
+
+                chain.Processar(dto);
                 Console.WriteLine();
             }
 
+            #region tempo de espera
             Thread.Sleep(700);
             Console.Write(".");
             Thread.Sleep(700);
@@ -184,6 +175,21 @@ namespace Presentation.Views
             Console.Write(".");
             Thread.Sleep(1500);
             Console.Clear();
+            #endregion
+        }
+
+        private static IHandler CriarCadeiaDeResponsabilidade()
+        {
+            var estouro = new EstouroHandler();
+            var vitoria = new VitoriaHandler();
+            var empate = new EmpateHandler();
+            var derrota = new DerrotaHandler();
+
+            estouro.DefinirProximo(vitoria);
+            vitoria.DefinirProximo(empate);
+            empate.DefinirProximo(derrota);
+
+            return estouro;
         }
 
         private static void ExibirCartasComFormato(Jogador jogador, bool ocultarSegundaCarta = false)
