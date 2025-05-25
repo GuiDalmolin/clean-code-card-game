@@ -1,47 +1,67 @@
 ﻿using Domain.Interfaces.Strategy;
 using Domain.Resources;
 
-namespace Domain.Entities
+namespace Domain.Entities;
+
+public abstract class Jogador(string nome, IJogadorStrategy jogadorStrategy)
 {
-    public abstract class Jogador
+    public string Nome { get; } = nome;
+    public List<Carta> Cartas { get; private set; } = [];
+    public int Pontuacao { get; private set; } = 100;
+    public int Aposta { get; private set; }
+    public int Vitorias { get; private set; }
+    public int Turno { get; private set; }
+
+    private IJogadorStrategy _jogadorStrategy = jogadorStrategy;
+
+    public void SetStrategy(IJogadorStrategy strategy)
     {
-        public string Nome { get; set; } = string.Empty;
-        public List<Carta> Cartas { get; set; } = new List<Carta>();
-        public int Pontuacao = 100;
-        public int Aposta = 0;
-        public int Vitorias = 0;
-        public int Turno = 0;
+        _jogadorStrategy = strategy;
+    }
 
-        protected IJogadorStrategy _jogadorStrategy;
+    public Enums.Acao Jogar()
+    {
+        return _jogadorStrategy.RealizarJogada(this);
+    }
 
-        protected Jogador(string nome, IJogadorStrategy jogadorStrategy)
-        {
-            Nome = nome;
-            _jogadorStrategy = jogadorStrategy;
-        }
+    public void Apostar()
+    {
+        Aposta = _jogadorStrategy.RealizarAposta(this);
+    }
 
-        public void SetStrategy(IJogadorStrategy strategy)
-        {
-            _jogadorStrategy = strategy;
-        }
+    public void DiminuirPontosAposta()
+    {
+        Pontuacao -= Aposta;
+    }
 
-        public Enums.Acao Jogar()
-        {
-            return _jogadorStrategy.RealizarJogada(this);
-        }
+    public void AumentarPontosAposta()
+    {
+        Pontuacao += Aposta;
+    }
 
-        public int Apostar()
-        {
-            return _jogadorStrategy.RealizarAposta(this);
-        }
+    public void DobrarAposta()
+    {
+        Aposta *= 2;
+    }
 
-        public void Resetar()
-        {
-            Turno = 0;
-            Cartas.Clear();
-        }
+    public void ProximoTurno()
+    {
+        Turno++;
+    }
 
+    public void ReduzirVitorias()
+    {
+        Vitorias--;
+    }
 
+    public void AumentarVitorias()
+    {
+        Vitorias++;
+    }
 
+    public void Resetar()
+    {
+        Turno = 0;
+        Cartas.Clear();
     }
 }
