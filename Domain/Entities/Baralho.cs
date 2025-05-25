@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces.Iterator;
+﻿using System.Security.Cryptography;
+using Domain.Interfaces.Iterator;
 using Domain.Iterators;
 using Domain.Resources;
 
@@ -6,7 +7,7 @@ namespace Domain.Entities
 {
     public class Baralho
     {
-        public List<Carta> Cartas { get; private set; }
+        private List<Carta> Cartas { get; set; }
 
         public Baralho()
         {
@@ -14,23 +15,22 @@ namespace Domain.Entities
             Embaralhar();
         }
 
-        private List<Carta> GerarBaralhoPadrao()
+        private static List<Carta> GerarBaralhoPadrao()
         {
-            var cartas = new List<Carta>();
-            foreach (var numero in Enum.GetValues(typeof(Enums.Numero)).Cast<Enums.Numero>())
-            {
-                foreach (var naipe in Enum.GetValues(typeof(Enums.Naipe)).Cast<Enums.Naipe>())
+            return (from numero in Enum.GetValues<Enums.Numero>()
+                from naipe in Enum.GetValues<Enums.Naipe>()
+                select new Carta
                 {
-                    cartas.Add(new Carta { Numero = numero, Naipe = naipe });
-                }
-            }
-            return cartas;
+                    Numero = numero,
+                    Naipe = naipe
+                }).ToList();
         }
 
         private void Embaralhar()
         {
-            var random = new Random();
-            Cartas = Cartas.OrderBy(c => random.Next()).ToList();
+            Cartas = Cartas
+                .OrderBy(_ => RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue))
+                .ToList();
         }
 
         public IBaralhoIterator CriarIterator()
