@@ -1,22 +1,21 @@
 ﻿using Domain.Dtos;
 using Domain.Interfaces.ChainOfResponsability;
 
-namespace Domain.Handlers
+namespace Domain.Handlers;
+
+public abstract class AbstractHandler : IHandler
 {
-    public abstract class AbstractHandler : IHandler
+    private IHandler? _nextHandler;
+
+    public IHandler DefinirProximo(IHandler handler)
     {
-        private IHandler _nextHandler;
+        _nextHandler = handler;
 
-        public IHandler DefinirProximo(IHandler handler)
-        {
-            this._nextHandler = handler;
+        return handler;
+    }
 
-            return handler;
-        }
-
-        public virtual void Processar(DefinirVencedoresDto request)
-        {
-            this._nextHandler?.Processar(request);
-        }
+    public virtual void Processar(DefinirVencedoresDto request)
+    {
+        _nextHandler?.Processar(request);
     }
 }

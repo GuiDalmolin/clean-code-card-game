@@ -8,9 +8,10 @@ namespace Domain.Handlers
         {
             if (request.PontuacaoDealer > 21 || request.PontuacaoJogador > request.PontuacaoDealer)
             {
-                Console.WriteLine($"{request.Jogador.Nome} ganhou!");
-                request.Jogador.Pontuacao += request.Jogador.Aposta * 2;
-                request.Jogador.Vitorias++;
+                request.Jogador.DobrarAposta();
+                request.Jogador.AumentarPontosAposta();
+                request.Jogador.AumentarVitorias();
+                Console.WriteLine($"{request.Jogador.Nome} ganhou! Pontos: {request.Jogador.Pontuacao}");
             }
             else
             {

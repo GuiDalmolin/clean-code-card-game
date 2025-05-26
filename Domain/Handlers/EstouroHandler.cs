@@ -8,8 +8,8 @@ namespace Domain.Handlers
         {
             if (request.PontuacaoJogador > 21)
             {
+                request.Jogador.ReduzirVitorias();
                 Console.WriteLine($"{request.Jogador.Nome} perdeu (estourou).");
-                request.Jogador.Vitorias--;
             }
             else
             {

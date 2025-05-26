@@ -8,8 +8,8 @@ namespace Domain.Handlers
         {
             if (request.PontuacaoJogador == request.PontuacaoDealer)
             {
+                request.Jogador.AumentarPontosAposta();
                 Console.WriteLine($"{request.Jogador.Nome} empatou e recuperou sua aposta.");
-                request.Jogador.Pontuacao += request.Jogador.Aposta;
             }
             else
             {
