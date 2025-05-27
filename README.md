@@ -43,3 +43,56 @@ A cadeia de validações inclui:
 ## Diagrama UML
 
 ![Diagrama UML](Docs/Diagrama-uml.png)
+
+---
+
+## Análise dos Problemas Detectados
+
+- Código acoplado e com responsabilidades misturadas na camada Presentation.
+- Falta de abstração da lógica de jogo, dificultando testes e manutenção.
+- Uso inconsistente de encapsulamento e práticas inseguras (ex.: uso de `Random`).
+- Falta de padronização no estilo e nomenclatura.
+
+---
+
+## Estratégia de Refatoração
+
+- Separação clara das camadas: Presentation, Application e Domain.
+- Criação de interfaces para abstração da lógica de jogo (`IGameService`).
+- Extração da lógica de jogo do console para serviço testável.
+- Substituição do `Random` por `RandomNumberGenerator` para segurança e previsibilidade.
+- Introdução de testes unitários cobrindo o novo projeto Application.
+- Organização do código para facilitar manutenção e extensibilidade.
+
+---
+
+## Testes Implementados
+
+- Suíte de testes unitários para `GameService`.
+- Cobertura dos métodos principais: criação de jogadores, apostas, distribuição de cartas, avaliação de vencedores e estado da mesa.
+- Uso de mocks para simular entradas e garantir isolamento dos testes.
+
+---
+
+## Estilização e Linter
+
+Este projeto usa `dotnet-format` para garantir consistência na formatação de código:
+```bash
+dotnet tool install -g dotnet-format
+dotnet format
+```
+---
+
+## Instalação e Execução
+
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/seuusuario/CardGame.git
+   cd CardGame
+   ```
+2. Abra o projeto no Visual Studio ou VS Code.
+3. Compile e execute o projeto principal (CardGame.Presentation).
+4. Execute os testes com o comando:
+    ```bash
+    dotnet test Tests/
+    ```
