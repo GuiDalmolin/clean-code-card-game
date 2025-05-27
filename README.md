@@ -87,7 +87,7 @@ dotnet format
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seuusuario/CardGame.git
+   git clone https://github.com/GuiDalmolin/clean-code-card-game.git
    cd CardGame
    ```
 2. Abra o projeto no Visual Studio ou VS Code.
