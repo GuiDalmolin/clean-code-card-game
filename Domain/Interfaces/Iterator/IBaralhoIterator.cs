@@ -6,5 +6,6 @@ namespace Domain.Interfaces.Iterator
     {
         bool HasNext();
         Carta Next();
+        int Restantes { get; }
     }
 }

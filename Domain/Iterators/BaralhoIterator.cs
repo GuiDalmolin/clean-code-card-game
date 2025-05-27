@@ -25,5 +25,7 @@ namespace Domain.Iterators
 
             return _cartas[_currentIndex++];
         }
+
+        public int Restantes => _cartas.Count - _currentIndex;
     }
 }
