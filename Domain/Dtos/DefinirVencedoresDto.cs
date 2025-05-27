@@ -1,18 +1,5 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Dtos
-{
-    public class DefinirVencedoresDto
-    {
-        public DefinirVencedoresDto(Jogador jogador, int pontuacaoJogador, int pontuacaoDealer)
-        {
-            Jogador = jogador;
-            PontuacaoJogador = pontuacaoJogador;
-            PontuacaoDealer = pontuacaoDealer;
-        }
+namespace Domain.Dtos;
 
-        public Jogador Jogador { get; set; }
-        public int PontuacaoJogador { get; set; }
-        public int PontuacaoDealer { get; set; }
-    }
-}
+public record DefinirVencedoresDto(Jogador Jogador, int PontuacaoJogador, int PontuacaoDealer);
