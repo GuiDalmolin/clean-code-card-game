@@ -6,7 +6,6 @@
 
 - Refatoração substancial para separar responsabilidades e reduzir acoplamento.
 - Implementação de testes unitários para ~50% de cobertura dos fluxos principais.
-- Preparação para implementação futura de interface fluente.
 - Organização modular clara em camadas Domain, Application e Presentation.
 - Documentação detalhada para facilitar manutenção e evolução.
 
