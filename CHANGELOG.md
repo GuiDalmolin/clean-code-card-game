@@ -2,7 +2,7 @@
 
 ---
 
-## Contexto Geral
+## Contexto Geral 
 
 - Refatoração substancial para separar responsabilidades e reduzir acoplamento.
 - Implementação de testes unitários para ~50% de cobertura dos fluxos principais.
